@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
+      
       appBar: AppBar(
         title: const Text('Lista de tareas'),
         backgroundColor: Colors.blueAccent,
@@ -57,12 +58,73 @@ class _HomePageState extends State<HomePage>{
               setState(() {
                 tarea.estaCompletada = ! tarea.estaCompletada;
               });
-            }
+            },
           );
-        }
-      )
-
-
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _mostrarDialogoAgregarTarea,
+        child: const Icon(Icons.add),
+      ),
     );
   }
+  //funcion asincrona, esta simulara una peticion a una base de datos en internet 
+  Future <void> _guardarTareaEnservidor(Tarea nuevaTarea) async{
+    await Future.delayed(const Duration(seconds: 2));
+    //despues de los 2 segundos añade la tarea y vuelve a dibujar la IU 
+    setState(() {
+      listaDeTareas.add(nuevaTarea);
+    });
+
+  }
+  void _mostrarDialogoAgregarTarea(){
+    final textController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: const Text('Nueva Tarea'),
+          content: TextField(
+            controller: textController,
+            decoration: const InputDecoration(hintText: '¿Que tienes que hacer?'),
+
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+
+
+
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context), //cierra la ventana 
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async{
+                if (textController.text.isEmpty){
+                  final nuevaTarea = Tarea(
+                    id: DateTime.now().toString(), // id unico basado en el tiempo
+                    titulo: textController.text,
+
+
+                  );
+                  Navigator.pop(context);
+                  //espera la forma asincrona en la que el servidor responda
+                  await _guardarTareaEnservidor(nuevaTarea);
+                }
+              },
+              child: const Text('Guardar'),
+            )
+          ],
+
+        );
+      },
+
+    );
+
+  }
+
 }
