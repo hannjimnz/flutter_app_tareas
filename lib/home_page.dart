@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage>{
               ),
             ),
             leading: Icon(
-              tarea.estaCompletada ? Colors.check_box : Colors.check_box_outline_blank, 
+              tarea.estaCompletada ? Icons.check_box : Icons.check_box_outline_blank, 
               color: tarea.estaCompletada ? Colors.green : Colors.grey, 
             ),
             onTap: (){
